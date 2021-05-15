@@ -4,7 +4,7 @@ using [fastapi](https://fastapi.tiangolo.com/) backend for Eleuther's Experiment
 
 # TODOs:
 - [ ] write some [basic authentification](https://fastapi.tiangolo.com/tutorial/security/first-steps/) to see how this works
-- [ ] check how database work by adding one manual element in our fastapi database
+- [ ] check how databases work by adding one manual element in our first fastapi database
 - [ ] send human input from our [current frontend](https://github.com/EleutherAGI/eegi-web-app) to the backend's database
 
 # Current notes
