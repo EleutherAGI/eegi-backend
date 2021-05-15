@@ -1,11 +1,11 @@
 # eegi-backend
 
-using [fastpai](https://fastapi.tiangolo.com/) backend for eleuther's experiments in general intelligence
+using [fastpai](https://fastapi.tiangolo.com/) backend for Eleuther's Experiments in General Intelligence
 
 # TODOs:
-- [ ] write one [basic authentification](https://fastapi.tiangolo.com/tutorial/security/first-steps/) simple example
-- [ ] have one manual element in our fastapi database
-- [ ] have some human input from [current frontend](https://github.com/EleutherAGI/eegi-web-app) send one database input to this backend's database
+- [ ] write some [basic authentification](https://fastapi.tiangolo.com/tutorial/security/first-steps/) to see how this works
+- [ ] check how database work by adding one manual element in our fastapi database
+- [ ] send human input from our [current frontend](https://github.com/EleutherAGI/eegi-web-app) to the backend's database
 
 # Current notes
 - [ ] [eegi v2](https://docs.google.com/document/d/18pmJBgiucNCg3PJoud3zNTc4qsq5tvcS_WZ9ltsuDMY/edit)
