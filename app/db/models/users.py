@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP
+from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, Boolean
 from ..database import Base
 
 from datetime import datetime
@@ -8,6 +8,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     type = Column(String(50))
+    is_active = Column(Boolean, nullable=False)
     first_name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     created_timestamp = Column(TIMESTAMP, nullable=False,
