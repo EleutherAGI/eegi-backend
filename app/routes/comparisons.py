@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 router = APIRouter()
 
-@router.post("/")
+@router.get("/")
 def get_comparison():
     pass
 

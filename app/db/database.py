@@ -2,14 +2,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
+
 import sys
+sys.path.append("..")
+from settings import DBSettings
 
 import os
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DB_CONN")
-
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, pool_size=10,
+    DBSettings.SQLALCHEMY_DATABASE_URL, pool_size=10,
     max_overflow=2,
     pool_recycle=300,
     pool_pre_ping=True,

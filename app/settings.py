@@ -9,7 +9,7 @@ class EmailSettings:
 
 class DBSettings:
     """ Database Configuration"""
-    DATABASE = "postgres"
+    DATABASE = "postgresql"
     POSTGRES_SERVER = "localhost"
     POSTGRES_PORT = "5432"
     POSTGRES_USER = ""
