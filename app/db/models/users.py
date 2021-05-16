@@ -7,14 +7,15 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    type = Column(String(50))
     first_name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     created_timestamp = Column(TIMESTAMP, nullable=False,
                                default=datetime.utcnow)
 
-    __mapper_args___ = {
+    __mapper_args__ = {
         "polymorphic_identity" : "user",
-        "polymorphic_on": type
+        "polymorphic_on" : type
     }
 
 class UserWithPasswordLogin(User):
@@ -24,7 +25,7 @@ class UserWithPasswordLogin(User):
     password_hash = Column(String, nullable=False)
     
     __mapper_args__ = {
-        'polymorphic_identity':'manager',
+        'polymorphic_identity' : 'user_with_password_login',
     }
 
 # TODO User with github login
