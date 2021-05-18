@@ -12,7 +12,7 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean(), default=True)
     is_admin = Column(Boolean(), default=False)
-    created_by_userid = Column(Integer, nullable=False)
+    created_by_userid = Column(String, nullable=False)
     created_timestamp = Column(TIMESTAMP, nullable=True,
                             default=datetime.utcnow)
 

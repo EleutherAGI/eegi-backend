@@ -8,6 +8,6 @@ class AccessKey(Base):
 
     key_id = Column(String, primary_key=True, index=True)
     user_id = Column(String, nullable=True)
-    created_by_userid = Column(Integer, nullable=False)
+    created_by_userid = Column(String, nullable=False)
     created_timestamp = Column(TIMESTAMP, nullable=False,
                                default=datetime.utcnow)
