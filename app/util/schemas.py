@@ -46,6 +46,7 @@ class UserPasswordChange(BaseModel):
     new_password: str
 
 
+
 class UserAuthenticate(UserBase):
     password: str
 
@@ -67,27 +68,15 @@ class User(UserBase):
         orm_mode = True
 
 
-# Request body classes
-class RedisRq(BaseModel):
-    range_value: int
-
-
-class ArticleCreate(BaseModel):
-    user_id: int
-    article_title: str
-    article_text: str
-    tags: list
-
-
-class ArticleUpdate(BaseModel):
-    user_id: int
-    article_title: str
-    article_text: str
-    tags: list
-
-
 class Key(BaseModel):
     key: str = None
 
 class Registerkey(Key):
     created_by_userid: int
+
+
+class FilterSampleCreate(BaseModel):
+    text_sample_id_1: str
+    text_sample_id_2: str
+    user_id: str
+

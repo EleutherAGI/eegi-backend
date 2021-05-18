@@ -26,8 +26,6 @@ def register_user(user: schemas.UserCreate,
     if data is not None:
         return JSONResponse(status_code=400,
                             content={"message": "email already registered"})
-        # raise HTTPException(status_code=400,
-        #                     detail="email already registered")
     data = crud_users.create_user(user=user, db=db)
     if data is None:
         return JSONResponse(status_code=500,

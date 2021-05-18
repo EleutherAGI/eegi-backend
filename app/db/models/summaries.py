@@ -1,8 +1,9 @@
 import enum
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from ..dbconf import Base
+from datetime import datetime
 
 from .users import User
 
@@ -35,6 +36,7 @@ class TextSampleComparison(Base, BinaryComparisonBase):
     text_sample_1 = relationship("TextSample", foreign_keys=[text_sample_id_1], backref="text_sample_comparisons_from_1")
     text_sample_2 = relationship("TextSample", foreign_keys=[text_sample_id_2], backref="text_sample_comparisons_from_2")
     user = relationship("User", backref="text_sample_comparisons")
+    created_timestamp = Column(TIMESTAMP, nullable=True, default=datetime.utcnow)
 
 
 class Summary(Base):
@@ -63,6 +65,7 @@ class SummaryComparison(Base, BinaryComparisonBase):
     summary_1 = relationship("Summary", foreign_keys=[summary_id_1], backref="comparisons_from_1")
     summary_2 = relationship("Summary", foreign_keys=[summary_id_2], backref="comparisons_from_2")
     user = relationship("User", backref="summary_comparisons")
+    created_timestamp = Column(TIMESTAMP, nullable=True, default=datetime.utcnow)
 
     # TODO add validate that both summaries refer to the same text sample
     @validates("summary_1")

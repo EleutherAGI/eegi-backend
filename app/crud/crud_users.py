@@ -57,7 +57,7 @@ class CRUDUsers:
         except SQLAlchemyError as e:
             print(e)
 
-    def update_user(self, user_id: int, user: schemas.UserUpdate,
+    def update_user(self, user_id: str, user: schemas.UserUpdate,
                     db: Session) -> Any:
         """ Update User"""
         try:
@@ -75,7 +75,7 @@ class CRUDUsers:
         except SQLAlchemyError as e:
             return None
 
-    def check_password(self, user_id: int, password: str,
+    def check_password(self, user_id: str, password: str,
                        db: Session):
         """ get user Password"""
         try:
@@ -114,7 +114,7 @@ class CRUDUsers:
         except SQLAlchemyError as e:
             return None
 
-    def delete_user(self, user_id: int, db: Session) -> Any:
+    def delete_user(self, user_id: str, db: Session) -> Any:
         """ Delete User"""
         try:
             db.query(models.User).filter(
@@ -124,7 +124,7 @@ class CRUDUsers:
         except SQLAlchemyError as e:
             return None
 
-    def user_status_update(self, user_id: int, status: str,
+    def user_status_update(self, user_id: str, status: str,
                            db: Session) -> Any:
         """ Disable User"""
         try:

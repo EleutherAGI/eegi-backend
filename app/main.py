@@ -37,16 +37,16 @@ def startup_event():
 
     db = SessionLocal()
 
-    id = str(uuid.uuid4().hex)
+    uid = str(uuid.uuid4().hex)
 
     user = schemas.UserCreate
-    user.id = id
+    user.id = uid
     user.email = "admin"
     user.password = "password"
     user.first_name = "admin"
     user.is_admin = True
     user.is_active = True
-    user.created_by_userid = id
+    user.created_by_userid = uid
 
     data = crud_base.get_user(email=user.email, db=db)
     if data is None:

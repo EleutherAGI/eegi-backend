@@ -36,26 +36,10 @@ all_users_responses = {
                                               [{
                                                   "id": 0,
                                                   "first_name": "string",
-                                                  "last_name": "string"
-                                                  , "full_name": "string",
-                                                  "gender": "string",
-                                                  "email": "string"
-                                                  , "photo": "string"
-                                                  , "city": "string",
-                                                  "region": "string"
-                                                  , "zip": "string",
-                                                  "country": "string"
-                                                  , "is_active": "string",
-                                                  "is_superuser": "string"
-                                                  , "is_admin": "string"
-                                                  ,
-                                                  "created_by_userid": "string"
-                                                  ,
-                                                  "created_timestamp": "string"
-                                                  ,
-                                                  "modified_by_userid": "string"
-                                                  ,
-                                                  "modified_timestamp": "string"}]}}
+                                                  "email": "string",
+                                                  "is_admin": "string",
+                                                  "created_by_userid": "string",
+                                                  "created_timestamp": "string"}]}}
             }
         },
     }
@@ -82,20 +66,12 @@ login_response = {
                             "token_type": "string",
                             "session_id": "string",
                             "user": {
-                                "id": 0, "first_name": "string",
-                                "last_name": "string"
-                                , "full_name": "string", "gender": "string"
+                                "id": 0, "first_name": "string"
                                 , "email": "string"
-                                , "photo": "string"
-                                , "city": "string", "region": "string"
-                                , "zip": "string", "country": "string"
                                 , "is_active": "string"
-                                , "is_superuser": "string"
                                 , "is_admin": "string"
                                 , "created_by_userid": "string"
-                                , "created_timestamp": "string"
-                                , "modified_by_userid": "string"
-                                , "modified_timestamp": "string"}}
+                                , "created_timestamp": "string"}}
             }
         },
     }
@@ -107,19 +83,12 @@ single_users_responses = {
         "content": {
             "application/json": {
                 "example": {
-                    "id": 0, "first_name": "string",
-                    "last_name": "string"
-                    , "full_name": "string", "gender": "string"
+                    "id": 0, "first_name": "string"
                     , "email": "string"
-                    , "photo": "string"
-                    , "city": "string", "region": "string"
-                    , "zip": "string", "country": "string"
-                    , "is_active": "string", "is_superuser": "string"
+                    , "is_active": "string"
                     , "is_admin": "string"
                     , "created_by_userid": "string"
-                    , "created_timestamp": "string"
-                    , "modified_by_userid": "string"
-                    , "modified_timestamp": "string"}
+                    , "created_timestamp": "string"}
             }
         },
     }
