@@ -1,32 +1,75 @@
 from fastapi import APIRouter, Depends, HTTPException
+from starlette import status
 from fastapi.responses import JSONResponse
-from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
 from fastapi.encoders import jsonable_encoder
-import datetime
+from datetime import timedelta
+from sqlalchemy.orm import Session
+from jwt import exceptions
+from jwt.utils import get_int_from_datetime
+from datetime import datetime
 import uuid
-
+from fastapi.security import OAuth2PasswordRequestForm
 import sys
+
 sys.path.append("..")
-from utils import deps, schemas
-from crud import get_active_user, check_username_password, check_active_session, active_user, get_user
-from settings import ProjectSettings
+from crud import crud_login, get_user, get_active_user, crud_users, crud_base, crud_keys
+from util import deps, schemas, response_schemas
 from auth import access_token
+from settings import ProjectSettings
+from util import send_reset_password_email
 
 router = APIRouter()
 
-@router.post("/getToken")
-def authenticate_user(form_data: OAuth2PasswordRequestForm = Depends(), 
-                      db: Session = Depends(deps.get_db))-> JSONResponse:
+@router.post("/key_signup", responses=response_schemas.general_responses)
+def signup_with_key(user: schemas.UserKeyCreate,
+                    db: Session = Depends(deps.get_db))  -> JSONResponse:
+    """ Register A User"""
 
-    # Checking if users in dict
+
+    data = crud_keys.get_key_id(id=user.key, db=db)
+    #Check if key is exists
+    if data is None:
+        return JSONResponse(status_code=400,
+                            content={"message": "Invalid Key!"})
+
+    #Check if key is already in use
+    if data.user_id is not None:
+        return JSONResponse(status_code=400,
+                            content={"message": "Key Already in use!"})
+
+    new_user = schemas.UserCreate
+    new_user.email = user.email
+    new_user.password = user.password
+    new_user.first_name = user.first_name
+    new_user.is_active = True
+    new_user.is_admin = False
+    new_user.created_by_userid = data.created_by_userid
+
+
+    data = crud_base.get_user(email=new_user.email, db=db)
+    if data is not None:
+        return JSONResponse(status_code=400,
+                            content={"message": "email already registered"})
+
+    data = crud_users.create_user_from_key(user=new_user, key=user.key, db=db)
+    if data is None:
+        return JSONResponse(status_code=500,
+                            content={"message": "Internal Server Error"})
+    return JSONResponse(status_code=200,
+                        content={"message": "success"})
+
+# replace response_model=Token with custom responses
+@router.post("/getToken", responses=response_schemas.get_token_response)
+def authenticate_user(form_data: OAuth2PasswordRequestForm = Depends(),
+                      db: Session = Depends(deps.get_db)) -> JSONResponse:
+    """ Return Access Token"""
     db_user = get_active_user(email=form_data.username, db=db)
-
+    
     if db_user is None:
         return JSONResponse(status_code=400,
                             content={"message": "Invalid Credentials"})
     else:
-        is_password_correct = check_username_password(
+        is_password_correct = crud_login.check_username_password(
             email=form_data.username,
             password=form_data.password,
             db=db)
@@ -34,7 +77,7 @@ def authenticate_user(form_data: OAuth2PasswordRequestForm = Depends(),
             return JSONResponse(status_code=400,
                                 content={"message": "Invalid Credentials"})
         else:
-            access_token_expires = datetime.timedelta(
+            access_token_expires = timedelta(
                 minutes=ProjectSettings.ACCESS_TOKEN_EXPIRE_MINUTES)
             token = access_token.create_access_token(
                 data={"sub": form_data.username},
@@ -43,48 +86,59 @@ def authenticate_user(form_data: OAuth2PasswordRequestForm = Depends(),
                                 content={"access_token": token,
                                          "token_type": "Bearer"})
 
-@router.get("/refreshToken")
-def new_token(old_token: str = None, 
-              session_id: str = None,
+
+@router.get("/refresh_token", responses=response_schemas.get_token_response)
+def new_token(old_token: str = None, session_id: str = None,
               db: Session = Depends(deps.get_db)) -> JSONResponse:
-    
+    """ Return Access Token"""
+
     if old_token and session_id:
         payload = access_token.decode_access_token(token=old_token)
         email = payload.get("sub")
 
-        db_session = check_active_session(session_id=session_id, db=db)
-        session_time = datetime.strptime(str(db_session.created_timestamp), "%Y-%m-%d %H:%M:%S.%f")
+        db_session = crud_login.check_active_session(session_id=session_id,
+                                                     db=db)
+        session_time = datetime.strptime(str(db_session.created_timestamp),
+                                         "%Y-%m-%d %H:%M:%S.%f")
+
         diff = datetime.utcnow() - session_time
+
         limit = ProjectSettings.SESSION_TOKEN_EXPIRE_SECONDS  # 12 hours
 
-        if email == db_session.email and (db_session.status == "logged_in" or db_session.status == "active") and diff.seconds < limit:
-            active_user(session_id=session_id, db=db)
-            access_token_expires = datetime.timedelta(minutes = ProjectSettings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        if email == db_session.email and (
+                db_session.status == "logged_in" or db_session.status == "active") \
+                and diff.seconds < limit:
+            crud_login.active_user(session_id=session_id, db=db)
+            access_token_expires = timedelta(
+                minutes=ProjectSettings.ACCESS_TOKEN_EXPIRE_MINUTES)
             token = access_token.create_access_token(
                 data={"sub": email},
-                expires_delta=access_token_expires
-            )
+                expires_delta=access_token_expires)
             return JSONResponse(status_code=200,
                                 content={"access_token": token,
-                                            "token_type": "Bearer"})
+                                         "token_type": "Bearer"})
         else:
             return JSONResponse(status_code=400,
                                 content={"message": "session ended"})
     else:
         return JSONResponse(status_code=400,
-                            content={"message": "invalid token"})                                        
+                            content={"message": "invalid token"})
+
 
 # replace response_model=Token with custom responses
-@router.post("/login")
-def login_user(user: schemas.UserLogin,
+@router.post("/login", responses=response_schemas.login_response)
+def login_user(user: schemas.UserLogIn,
                db: Session = Depends(deps.get_db)) -> JSONResponse:
     """ Login user and Return Access Token"""
+    
+
     db_user = get_active_user(email=user.email, db=db)
+
     if db_user is None:
         return JSONResponse(status_code=400,
                             content={"message": "Invalid Credentials"})
     else:
-        is_password_correct = check_username_password(
+        is_password_correct = crud_login.check_username_password(
             email=user.email,
             password=user.password,
             db=db)
@@ -93,8 +147,8 @@ def login_user(user: schemas.UserLogin,
                                 content={"message": "Invalid Credentials"})
         else:
             uid = str(uuid.uuid4().hex)
-            login_user(user=user, session_id=uid, db=db)
-            access_token_expires = datetime.timedelta(
+            crud_login.login_user(user=user, session_id=uid, db=db)
+            access_token_expires = timedelta(
                 minutes=ProjectSettings.ACCESS_TOKEN_EXPIRE_MINUTES)
             token = access_token.create_access_token(
                 data={"sub": user.email},
@@ -107,12 +161,75 @@ def login_user(user: schemas.UserLogin,
                                              get_user(email=user.email,
                                                       db=db))})
 
-@router.put("/logoff/{session_id}")
+
+# replace response_model=Token with custom responses
+@router.put("/logoff/{session_id}", responses=response_schemas.general_responses)
 def logoff_user(session_id: str,
                 db: Session = Depends(deps.get_db)) -> JSONResponse:
     """ Login user and Return Access Token"""
-    db_session = logoff_user(session_id=session_id, db=db)
+    db_session = crud_login.logoff_user(session_id=session_id, db=db)
     if db_session is None:
+        return JSONResponse(status_code=500,
+                            content={"message": "Internal Server Error"})
+    return JSONResponse(status_code=200,
+                        content={"message": "success"})
+
+
+@router.post("/password_recovery", responses=response_schemas.general_responses)
+def recover_password(user: schemas.UserBase,
+                     db: Session = Depends(deps.get_db)) -> JSONResponse:
+    """
+    Password Recovery
+    """
+    db_user = get_active_user(email=user.email, db=db)
+
+    if db_user is None:
+        return JSONResponse(status_code=404, content={
+            "message": "The user with this email "
+                       "does not exist in the system."})
+
+    password_reset_token = access_token.generate_password_reset_token(
+        email=user.email)
+    send_reset_password_email(emails=[user.email],
+                              password_reset_token=password_reset_token)
+    return JSONResponse(status_code=200,
+                        content={"message": "success"})
+
+
+@router.post("/reset_password", responses=response_schemas.general_responses)
+def reset_password(reset_data: schemas.UserPasswordReset,
+                   db: Session = Depends(deps.get_db)) -> JSONResponse:
+    """
+    Reset password
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    expire_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="access expired",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = access_token.verify_password_reset_token(
+            token=reset_data.token)
+        token_validity = payload.get("exp")
+        if get_int_from_datetime(datetime.utcnow()) >= token_validity:
+            raise expire_exception
+        token_email: str = payload.get("sub")
+        if token_email is None:
+            raise credentials_exception
+    except exceptions.JWTException as e:
+        raise credentials_exception
+    db_user = crud_users.verify_user(email=token_email, db=db)
+    if db_user is None:
+        raise credentials_exception
+
+    data = crud_users.update_user_password(email=token_email,
+                                           password=reset_data.password, db=db)
+    if data is None:
         return JSONResponse(status_code=500,
                             content={"message": "Internal Server Error"})
     return JSONResponse(status_code=200,

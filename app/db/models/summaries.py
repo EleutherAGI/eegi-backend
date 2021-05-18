@@ -2,7 +2,7 @@ import enum
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
-from ..database import Base
+from ..dbconf import Base
 
 from .users import User
 
