@@ -53,26 +53,12 @@ def reset_password_email_content(message, email,
         your administrator. Your password has not been reset.
         To reset your password, click on the link below (or copy and paste the URL into your browser):
         %(link)s""" % ({"email": email, "link": link})
-    # html = """\
-    # <html>
-    #   <body>
-    #     <p>Hi,<br>
-    #        How are you?<br>
-    #        <a href="URL">Test Email</a>
-    #        has many great tutorials.
-    #     </p>
-    #   </body>
-    # </html>
-    # """
 
     # Turn these into plain/html MIMEText objects
     part1 = MIMEText(text, "plain")
-    # part2 = MIMEText(html, "html")
 
-    # Add HTML/plain-text parts to MIMEMultipart message
     # The email client will try to render the last part first
     message.attach(part1)
-    # message.attach(part2)
     return message
 
 
