@@ -5,9 +5,7 @@ from jwt.utils import get_int_from_datetime
 from datetime import datetime
 from fastapi import Depends, HTTPException
 from starlette import status
-import sys
 
-sys.path.append("..")
 from auth import access_token
 from db import SessionLocal
 from crud import crud_users

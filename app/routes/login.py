@@ -9,9 +9,7 @@ from jwt.utils import get_int_from_datetime
 from datetime import datetime
 import uuid
 from fastapi.security import OAuth2PasswordRequestForm
-import sys
 
-sys.path.append("..")
 from crud import crud_login, get_user, get_active_user, crud_users, crud_base, crud_keys
 from util import deps, schemas, response_schemas
 from auth import access_token

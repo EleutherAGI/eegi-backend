@@ -3,9 +3,7 @@ from sqlalchemy.orm import defer
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import expression
 from typing import Any
-import sys
 
-sys.path.append("..")
 from db import models, pagination, session_scope
 
 

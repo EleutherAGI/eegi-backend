@@ -3,9 +3,7 @@ import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import Tuple, List
-import sys
 
-sys.path.append("..")
 from settings import EmailSettings, ProjectSettings
 
 

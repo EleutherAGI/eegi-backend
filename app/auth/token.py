@@ -7,9 +7,7 @@ from jwt import (
 from typing import Dict
 from pathlib import Path
 from jwt.utils import get_int_from_datetime
-import sys
 
-sys.path.append("..")
 from settings import EmailSettings
 
 

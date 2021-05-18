@@ -1,13 +1,10 @@
-from app.crud import crud_keys
 from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from enum import Enum
 import uuid
-import sys
 
-sys.path.append("..")
 from util import deps, schemas
 from crud import crud_keys
 from util import response_schemas

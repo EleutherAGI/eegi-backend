@@ -3,12 +3,9 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from enum import Enum
-import sys
 
-sys.path.append("..")
-from util import deps, schemas
-from crud import crud_users, crud_login, crud_base
-from util import response_schemas
+from util import deps, schemas, response_schemas
+from crud import crud_users, crud_base
 
 router = APIRouter()
 

@@ -2,10 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from enum import Enum
-import sys
 
-sys.path.append("..")
 from util import deps, schemas, response_schemas
 from crud import crud_users, crud_login, crud_articles
 

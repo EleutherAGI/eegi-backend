@@ -2,9 +2,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Any
 
-import sys
-
-sys.path.append("..")
 from db import models, pagination
 from util import passutil, schemas
 from crud import get_user

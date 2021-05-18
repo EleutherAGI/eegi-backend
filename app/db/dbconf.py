@@ -2,9 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
-import sys
 
-sys.path.append("..")
 from settings import DBSettings
 
 engine = create_engine(
