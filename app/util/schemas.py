@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from sqlalchemy.sql.expression import text
 
 
 # ---------------- login schemas -------------------- #
@@ -27,7 +28,7 @@ class UserCreate(UserBase):
     first_name: str
     is_active: bool = True
     is_admin: bool = False
-    created_by_userid: int
+    created_by_userid: str
 
 class UserKeyCreate(UserBase):
     password: str
@@ -79,4 +80,4 @@ class FilterSampleCreate(BaseModel):
     text_sample_id_1: str
     text_sample_id_2: str
     user_id: str
-
+    

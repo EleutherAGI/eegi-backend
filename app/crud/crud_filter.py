@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.sql.expression import func, select
 from datetime import datetime
 from typing import Any
 import uuid
@@ -37,25 +38,6 @@ class CRUDFilterComparisons:
             db_comparison = db.query(models.TextSampleComparison).filter(
                 models.TextSampleComparison.id == comparison_id).first()
 
-
-
-            db_comparison.item_1_is_better = item_1_is_better
-            
-            db.commit()
-            db.refresh(db_comparison)
-            return db_comparison
-        except SQLAlchemyError as e:
-            return None
-
-        
-    def update_comparison(self, comparison_id: str, item_1_is_better: bool,
-                    db: Session) -> Any:
-        """ Update Comparison"""
-        try:
-            
-            db_comparison = db.query(models.TextSampleComparison).filter(
-                models.TextSampleComparison.id == comparison_id).first()
-
             db_comparison.item_1_is_better = item_1_is_better
 
             db.commit()
@@ -64,23 +46,30 @@ class CRUDFilterComparisons:
         except SQLAlchemyError as e:
             return None
 
-
-    def create_article(self, article: schemas.FilterSampleCreate,
+    def create_comparison(self, comparison: schemas.FilterSampleCreate,
                        db: Session) -> Any:
-        """ Create New Article """
+        """ Create New Comparison """
         try:
             uid = str(uuid.uuid4().hex)
-            db_user = models.TextSampleComparison(id=uid,
-                                     user_id=article.user_id,
-                                     text_sample_id_1=article.text_sample_id_1,
-                                     text_sample_id_2=article.text_sample_id_2)
-            db.add(db_user)
+            db_comparison = models.TextSampleComparison(id=uid,
+                                     user_id=comparison.user_id,
+                                     text_sample_id_1=comparison.text_sample_id_1,
+                                     text_sample_id_2=comparison.text_sample_id_2)
+            db.add(db_comparison)
             db.commit()
-            db.refresh(db_user)
-            return db_user
+            db.refresh(db_comparison)
+            return db_comparison
         except SQLAlchemyError as e:
+            print(e)
             return None
 
+    def get_random_text_samples(self, num_samples: int, db: Session):
+        try:
+                        # data = db.query(models.User).options(defer('password')).all()
+            data = db.query(models.TextSample).order_by(func.random()).limit(num_samples).all()
+            return data
+        except SQLAlchemyError as e:
+            print(e)
 
 
 

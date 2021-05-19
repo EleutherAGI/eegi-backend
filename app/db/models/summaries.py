@@ -31,12 +31,13 @@ class TextSampleComparison(Base, BinaryComparisonBase):
     id = Column(String, primary_key=True, index=True)
     text_sample_id_1 = Column(Integer, ForeignKey("text_samples.id"), nullable=False)
     text_sample_id_2 = Column(Integer, ForeignKey("text_samples.id"), nullable=False)
+    created_timestamp = Column(TIMESTAMP, nullable=True, default=datetime.utcnow)
     user_id = Column(String, ForeignKey("users.id"))
 
     text_sample_1 = relationship("TextSample", foreign_keys=[text_sample_id_1], backref="text_sample_comparisons_from_1")
     text_sample_2 = relationship("TextSample", foreign_keys=[text_sample_id_2], backref="text_sample_comparisons_from_2")
     user = relationship("User", backref="text_sample_comparisons")
-    created_timestamp = Column(TIMESTAMP, nullable=True, default=datetime.utcnow)
+    
 
 
 class Summary(Base):

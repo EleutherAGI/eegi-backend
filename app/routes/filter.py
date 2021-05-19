@@ -46,10 +46,20 @@ def generate_comparison(user: schemas.UserCreate,
                       deps.get_current_user)) -> JSONResponse:
     """ Generate new comparison Comparisons"""
 
-    # TODO: implement way to load dummy data into the database
-    # So we can start generating comparisons
-
-    pass
+    sample1, sample2 = crud_filter_comparisons.get_random_text_samples(num_samples = 2, db=db)
+    comparison = schemas.FilterSampleCreate(
+        text_sample_id_1 = sample1.id, 
+        text_sample_id_2 = sample2.id, 
+        user_id = current_user.id
+        )
+    print(comparison)
+    data = crud_filter_comparisons.create_comparison(comparison=comparison, db=db)
+    
+    if data is None:
+        return JSONResponse(status_code=500,
+                            content={"message": "Internal Server Error"})
+    return JSONResponse(status_code=200,
+                        content={"message": "success"})
 
 @router.put("/comparisons", responses=response_schemas.general_responses)
 def update_comparison(item_1_is_better: bool, comparison_id: str,
