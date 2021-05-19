@@ -35,13 +35,14 @@ def signup_with_key(user: schemas.UserKeyCreate,
         return JSONResponse(status_code=400,
                             content={"message": "Key Already in use!"})
 
-    new_user = schemas.UserCreate
-    new_user.email = user.email
-    new_user.password = user.password
-    new_user.first_name = user.first_name
-    new_user.is_active = True
-    new_user.is_admin = False
-    new_user.created_by_userid = data.created_by_userid
+    new_user = schemas.UserCreate(
+        email = user.email,
+        password = user.password,
+        first_name = user.first_name,
+        is_active = True,
+        is_admin = False,
+        created_by_userid = data.created_by_userid
+    )
 
 
     data = crud_base.get_user(email=new_user.email, db=db)
