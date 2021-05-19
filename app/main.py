@@ -39,14 +39,15 @@ def startup_event():
 
     uid = str(uuid.uuid4().hex)
 
-    user = schemas.UserCreate
-    user.id = uid
-    user.email = "admin"
-    user.password = "password"
-    user.first_name = "admin"
-    user.is_admin = True
-    user.is_active = True
-    user.created_by_userid = uid
+    user = schemas.UserCreate(
+        id = uid,
+        email = "admin",
+        password = "password",
+        first_name = "admin",
+        is_admin = True,
+        is_active = True,
+        created_by_userid = uid
+    )
 
     data = crud_base.get_user(email=user.email, db=db)
     if data is None:
