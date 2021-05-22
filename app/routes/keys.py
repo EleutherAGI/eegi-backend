@@ -36,7 +36,7 @@ def register_key(key: schemas.Key,
                         content={"message": "success"})
 
 
-@router.get("/", responses=response_schemas.all_users_responses)
+@router.get("/", responses=response_schemas.all_keys_responses)
 def get_keys(key_id: str = None, page_num: int = 1,
               db: Session = Depends(deps.get_db),
               current_user: schemas.UserVerify = Depends(

@@ -45,6 +45,63 @@ all_users_responses = {
     }
 }
 
+all_keys_responses = {
+    **base_responses,
+    200: {
+        "content": {
+            "application/json": {
+                "example": {"total_pages": 0,
+                            "total_items": 0,
+                            "page_data": {"page_num": 0,
+                                          "items_count": 0,
+                                          "items":
+                                              [{
+                                                  "created_by_userid": 0,
+                                                  "key_id": "string",
+                                                  "user_id": "string",
+                                                  "created_timestamp": "string"}]}}
+            }
+        },
+    }
+}
+
+
+all_filter_comparison_responses = {
+    **base_responses,
+    200: {
+        "content": {
+            "application/json": {
+                "example": {"total_pages": 0,
+                            "total_items": 0,
+                            "page_data": {"page_num": 0,
+                                          "items_count": 0,
+                                          "items":
+                                              [{
+                                                  "id": "string",
+                                                  "text_sample_id_1": "string",
+                                                  "text_sample_id_2": "string",
+                                                  "item_1_is_better": "bool",
+                                                  "user_id": "string",
+                                                  "created_timestamp": "string"}]}}
+            }
+        },
+    }
+}
+
+create_filter_comparison = {
+    **base_responses,
+    200: {
+        "content": {
+            "application/json": {
+                "example": {"text_sample_1": "string",
+                            "text_sample_2": "string",
+                            "comparison_id": "string"}
+            }
+        },
+    }
+}
+
+
 get_token_response = {
     **base_responses,
     200: {

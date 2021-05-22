@@ -10,7 +10,7 @@ from crud import crud_filter_comparisons
 router = APIRouter()
 
 
-@router.get("/comparisons", responses=response_schemas.general_responses)
+@router.get("/comparisons", responses=response_schemas.all_filter_comparison_responses)
 def get_comparisons(comparison_id: int = None, page_num: int = 1,
                   db: Session = Depends(deps.get_db),
                   current_user: schemas.UserVerify = Depends(
@@ -39,13 +39,12 @@ def get_comparisons(comparison_id: int = None, page_num: int = 1,
                                                    "items":
                                                        json_compatible_item_data}})
 
-@router.post("/comparisons", responses=response_schemas.general_responses)
-def generate_comparison(user: schemas.UserCreate,
-                  db: Session = Depends(deps.get_db),
+@router.post("/comparisons", responses=response_schemas.create_filter_comparison)
+def generate_comparison(db: Session = Depends(deps.get_db),
                   current_user: schemas.UserVerify = Depends(
                       deps.get_current_user)) -> JSONResponse:
     """ Generate new comparison Comparisons"""
-
+    
     sample1, sample2 = crud_filter_comparisons.get_random_text_samples(num_samples = 2, db=db)
     comparison = schemas.FilterSampleCreate(
         text_sample_id_1 = sample1.id, 
@@ -59,7 +58,9 @@ def generate_comparison(user: schemas.UserCreate,
         return JSONResponse(status_code=500,
                             content={"message": "Internal Server Error"})
     return JSONResponse(status_code=200,
-                        content={"message": "success"})
+                        content={"text_sample_1": sample1.text,
+                                 "text_sample_2": sample2.text,
+                                 "comparison_id": data.id})
 
 @router.put("/comparisons", responses=response_schemas.general_responses)
 def update_comparison(item_1_is_better: bool, comparison_id: str,
