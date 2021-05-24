@@ -79,7 +79,10 @@ def authenticate_user(form_data: OAuth2PasswordRequestForm = Depends(),
             access_token_expires = timedelta(
                 minutes=ProjectSettings.ACCESS_TOKEN_EXPIRE_MINUTES)
             token = access_token.create_access_token(
-                data={"sub": form_data.username},
+                data={
+                    "sub": form_data.username,
+                    "perm": db_user.is_admin
+                },
                 expires_delta=access_token_expires)
             return JSONResponse(status_code=200,
                                 content={"access_token": token,
@@ -94,6 +97,7 @@ def new_token(old_token: str = None, session_id: str = None,
     if old_token and session_id:
         payload = access_token.decode_access_token(token=old_token)
         email = payload.get("sub")
+        is_admin = payload.get("perm")
 
         db_session = crud_login.check_active_session(session_id=session_id,
                                                      db=db)
@@ -111,7 +115,10 @@ def new_token(old_token: str = None, session_id: str = None,
             access_token_expires = timedelta(
                 minutes=ProjectSettings.ACCESS_TOKEN_EXPIRE_MINUTES)
             token = access_token.create_access_token(
-                data={"sub": email},
+                data={
+                    "sub": email,
+                    "perm": is_admin
+                },
                 expires_delta=access_token_expires)
             return JSONResponse(status_code=200,
                                 content={"access_token": token,
@@ -150,7 +157,10 @@ def login_user(user: schemas.UserLogIn,
             access_token_expires = timedelta(
                 minutes=ProjectSettings.ACCESS_TOKEN_EXPIRE_MINUTES)
             token = access_token.create_access_token(
-                data={"sub": user.email},
+                data={
+                    "sub": user.email,
+                    "perm": db_user.is_admin
+                },
                 expires_delta=access_token_expires)
             return JSONResponse(status_code=200,
                                 content={"access_token": token,

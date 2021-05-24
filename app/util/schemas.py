@@ -81,3 +81,7 @@ class FilterSampleCreate(BaseModel):
     text_sample_id_2: str
     user_id: str
     
+class ComparisonUpdate(BaseModel):
+    id: str
+    item_1_is_better: bool
+    

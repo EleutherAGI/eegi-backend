@@ -51,7 +51,7 @@ def generate_comparison(db: Session = Depends(deps.get_db),
         text_sample_id_2 = sample2.id, 
         user_id = current_user.id
         )
-    print(comparison)
+
     data = crud_filter_comparisons.create_comparison(comparison=comparison, db=db)
     
     if data is None:
@@ -63,14 +63,14 @@ def generate_comparison(db: Session = Depends(deps.get_db),
                                  "comparison_id": data.id})
 
 @router.put("/comparisons", responses=response_schemas.general_responses)
-def update_comparison(item_1_is_better: bool, comparison_id: str,
+def update_comparison(comparison_update: schemas.ComparisonUpdate,
                   db: Session = Depends(deps.get_db),
                   current_user: schemas.UserVerify = Depends(
                       deps.get_current_user)) -> JSONResponse:
     """ Update A Comparison with preference"""
 
-    data = crud_filter_comparisons.update_comparison(comparison_id=comparison_id, 
-                                                     item_1_is_better=item_1_is_better, 
+    data = crud_filter_comparisons.update_comparison(comparison_id=comparison_update.id, 
+                                                     item_1_is_better=comparison_update.item_1_is_better, 
                                                      db=db)
     if data is None:
         return JSONResponse(status_code=500,

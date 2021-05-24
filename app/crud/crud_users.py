@@ -27,7 +27,6 @@ class CRUDUsers:
                 models.AccessKey.key_id == key).first()
 
             db_key.user_id = db_user.id
-            print(db_key.user_id)
 
             db.add(db_user)
             db.commit()
