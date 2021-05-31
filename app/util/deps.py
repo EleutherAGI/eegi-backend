@@ -28,6 +28,7 @@ oauth2_scheme = OAuth2PasswordBearer(
 
 def get_current_user(token: str = Depends(oauth2_scheme),
                      db: Session = Depends(get_db)) -> UserVerify:
+
     """ Verify User Authentication"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -47,6 +48,7 @@ def get_current_user(token: str = Depends(oauth2_scheme),
     if token:
         try:
             payload = access_token.decode_access_token(token=token)
+
             token_validity = payload.get("exp")
             if get_int_from_datetime(datetime.utcnow()) >= token_validity:
                 raise expire_exception
@@ -54,8 +56,10 @@ def get_current_user(token: str = Depends(oauth2_scheme),
             if email is None:
                 raise credentials_exception
             token_data = TokenData(email=email)
+            
         except exceptions.JWTException as e:
             raise credentials_exception
+
         user = crud_users.verify_user(email=token_data.email, db=db)
         if user is None:
             raise credentials_exception
@@ -66,6 +70,7 @@ def get_current_user(token: str = Depends(oauth2_scheme),
 
 def get_current_admin(token: str = Depends(oauth2_scheme),
                      db: Session = Depends(get_db)) -> UserVerify:
+                     
     """ Verify User Authentication"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

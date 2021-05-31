@@ -23,6 +23,8 @@ def register_user(user: schemas.UserCreate,
     """ Register A User"""
     data = crud_base.get_user(email=user.email, db=db)
 
+    user.created_by_userid = current_user.id
+
     if data is not None:
         return JSONResponse(status_code=400,
                             content={"message": "email already registered"})
@@ -105,7 +107,7 @@ def delete_user(user_id: int, db: Session = Depends(deps.get_db),
 
 
 @router.get("/", responses=response_schemas.all_users_responses)
-def get_users(user_id: int = None, page_num: int = 1,
+def get_users(user_id: str = None, page_num: int = 1,
               db: Session = Depends(deps.get_db),
               current_user: schemas.UserVerify = Depends(
                   deps.get_current_admin)) -> JSONResponse:

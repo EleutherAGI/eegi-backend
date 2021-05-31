@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from settings import ProjectSettings
 from routes import api_router
+import uvicorn
 
 app = FastAPI(title=ProjectSettings.PROJECT_NAME,
               description=ProjectSettings.PROJECT_DESCRIPTION,
@@ -52,3 +53,6 @@ def startup_event():
     data = crud_base.get_user(email=user.email, db=db)
     if data is None:
         data = crud_users.create_user(user=user, db=db)
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", reload=True, port=8888)
