@@ -30,31 +30,16 @@ class CRUDFilterComparisons:
         except SQLAlchemyError as e:
             return None
 
-    def update_comparison(self, comparison_id: str, item_1_is_better: bool,
-                    db: Session) -> Any:
-        """ Update Comparison"""
-        try:
-            
-            db_comparison = db.query(models.TextSampleComparison).filter(
-                models.TextSampleComparison.id == comparison_id).first()
 
-            db_comparison.item_1_is_better = item_1_is_better
-
-            db.commit()
-            db.refresh(db_comparison)
-            return db_comparison
-        except SQLAlchemyError as e:
-            return None
-
-    def create_comparison(self, comparison: schemas.FilterSampleCreate,
+    def create_comparison(self, comparison: schemas.FilterComparison,
                        db: Session) -> Any:
         """ Create New Comparison """
         try:
-            uid = str(uuid.uuid4().hex)
-            db_comparison = models.TextSampleComparison(id=uid,
+            db_comparison = models.TextSampleComparison(id=comparison.id,
                                      user_id=comparison.user_id,
                                      text_sample_id_1=comparison.text_sample_id_1,
-                                     text_sample_id_2=comparison.text_sample_id_2)
+                                     text_sample_id_2=comparison.text_sample_id_2,
+                                     item_1_is_better=comparison.item_1_is_better)
             db.add(db_comparison)
             db.commit()
             db.refresh(db_comparison)

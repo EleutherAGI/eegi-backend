@@ -79,12 +79,15 @@ class Key(BaseModel):
     key: str
     is_admin: bool
 
-class FilterSampleCreate(BaseModel):
+class FilterComparisonCreate(BaseModel):
+    item_1_is_better: bool
+    text_sample_id_1: str
+    text_sample_id_2: str
+    
+class FilterComparison(BaseModel):
+    id: str
+    item_1_is_better: bool
     text_sample_id_1: str
     text_sample_id_2: str
     user_id: str
-    
-class ComparisonUpdate(BaseModel):
-    id: str
-    item_1_is_better: bool
     

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from enum import Enum
+import uuid
 
 from util import deps, schemas, response_schemas
 from crud import crud_filter_comparisons
@@ -39,39 +39,37 @@ def get_comparisons(comparison_id: int = None, page_num: int = 1,
                                                    "items":
                                                        json_compatible_item_data}})
 
-@router.post("/comparisons", responses=response_schemas.create_filter_comparison)
-def generate_comparison(db: Session = Depends(deps.get_db),
+@router.get("/comparisons/sample_pair", responses=response_schemas.create_filter_comparison)
+def get_samples(db: Session = Depends(deps.get_db),
                   current_user: schemas.UserVerify = Depends(
                       deps.get_current_user)) -> JSONResponse:
     """ Generate new comparison Comparisons"""
     
     sample1, sample2 = crud_filter_comparisons.get_random_text_samples(num_samples = 2, db=db)
-    comparison = schemas.FilterSampleCreate(
-        text_sample_id_1 = sample1.id, 
-        text_sample_id_2 = sample2.id, 
-        user_id = current_user.id
-        )
 
-    data = crud_filter_comparisons.create_comparison(comparison=comparison, db=db)
-    
-    if data is None:
-        return JSONResponse(status_code=500,
-                            content={"message": "Internal Server Error"})
     return JSONResponse(status_code=200,
                         content={"text_sample_1": sample1.text,
                                  "text_sample_2": sample2.text,
-                                 "comparison_id": data.id})
+                                 "text_id_1": sample1.id,
+                                 "text_id_2": sample2.id})
 
-@router.put("/comparisons", responses=response_schemas.general_responses)
-def update_comparison(comparison_update: schemas.ComparisonUpdate,
+@router.post("/comparisons", responses=response_schemas.general_responses)
+def create_comparison(comparison_update: schemas.FilterComparisonCreate,
                   db: Session = Depends(deps.get_db),
                   current_user: schemas.UserVerify = Depends(
                       deps.get_current_user)) -> JSONResponse:
     """ Update A Comparison with preference"""
+    
+    comparison = schemas.FilterComparison(
+        text_sample_id_1 = comparison_update.text_sample_id_1, 
+        text_sample_id_2 = comparison_update.text_sample_id_2, 
+        item_1_is_better = comparison_update.item_1_is_better,
+        user_id = current_user.id,
+        id = str(uuid.uuid4().hex)
+        )
 
-    data = crud_filter_comparisons.update_comparison(comparison_id=comparison_update.id, 
-                                                     item_1_is_better=comparison_update.item_1_is_better, 
-                                                     db=db)
+
+    data = crud_filter_comparisons.create_comparison(comparison=comparison, db=db)
     if data is None:
         return JSONResponse(status_code=500,
                             content={"message": "Internal Server Error"})
