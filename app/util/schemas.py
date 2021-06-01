@@ -28,7 +28,7 @@ class UserCreate(UserBase):
     first_name: str
     is_active: bool = True
     is_admin: bool = False
-    created_by_userid: str
+    #created_by_userid: str
 
 class AdminUserCreate(UserBase):
     password: str

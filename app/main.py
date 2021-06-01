@@ -47,12 +47,11 @@ def startup_event():
         first_name = "admin",
         is_admin = True,
         is_active = True,
-        created_by_userid = uid
     )
 
     data = crud_base.get_user(email=user.email, db=db)
     if data is None:
-        data = crud_users.create_user(user=user, db=db)
+        data = crud_users.create_user(user=user, created_by_userid=uid, db=db)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", reload=True, port=8888)
