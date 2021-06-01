@@ -24,11 +24,8 @@ def register_key(key: schemas.Key,
                       deps.get_current_admin)) -> JSONResponse:
     """ Create A Key, If nothing is provided will return a uuid"""
     
-    new_key = schemas.Registerkey
-    new_key.created_by_userid = current_user.id
-    new_key.key = key.key if key.key is not None else str(uuid.uuid4().hex)
-    
-    data = crud_keys.create_key(key=new_key, db=db)
+
+    data = crud_keys.create_key(key=key, created_by_userid = current_user.id, db=db)
     if data is None:
         return JSONResponse(status_code=500,
                             content={"message": "Internal Server Error"})
@@ -44,10 +41,18 @@ def get_keys(key_id: str = None, page_num: int = 1,
     """ Return All Keys"""
     if key_id is not None:
         db_key = crud_keys.get_key_id(id=key_id, db=db)
+
+        #print(db_key.used_by)
+        #print(db_key.created_by)
+
         if db_key is None:
             return JSONResponse(status_code=500,
                                 content={"message": "No Key Found"})
         json_compatible_item_data = jsonable_encoder(db_key)
+        json_compatible_item_data['used_by'] = jsonable_encoder(db_key.used_by)
+        json_compatible_item_data['created_by'] = jsonable_encoder(db_key.created_by)
+
+        print(json_compatible_item_data)
         return JSONResponse(status_code=200,
                             content=json_compatible_item_data)
     else:
@@ -56,6 +61,9 @@ def get_keys(key_id: str = None, page_num: int = 1,
             return JSONResponse(status_code=500,
                                 content={"message": "No Keys Found"})
         json_compatible_item_data = jsonable_encoder(db_key)
+
+       
+
         return JSONResponse(status_code=200,
                             content={"total_pages": db_key.pages,
                                      "total_items": db_key.total_items,

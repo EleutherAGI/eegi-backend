@@ -28,6 +28,7 @@ class UserCreate(UserBase):
     first_name: str
     is_active: bool = True
     is_admin: bool = False
+    created_by_userid: str
 
 class UserKeyCreate(UserBase):
     password: str
@@ -69,11 +70,8 @@ class User(UserBase):
 
 
 class Key(BaseModel):
-    key: str = None
-
-class Registerkey(Key):
-    created_by_userid: int
-
+    key: str
+    is_admin: bool
 
 class FilterSampleCreate(BaseModel):
     text_sample_id_1: str
