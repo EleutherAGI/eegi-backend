@@ -10,12 +10,13 @@ from crud import get_user
 
 
 class CRUDKeys:
-    def create_key(self, key: schemas.Registerkey, db: Session) -> Any:
+    def create_key(self, key: schemas.Key, created_by_userid: str, db: Session) -> Any:
         """ Add New User"""
         
         try:
             db_user = models.AccessKey(key_id=key.key,
-                                  created_by_userid=key.created_by_userid)
+                                       is_admin=key.is_admin,
+                                       created_by_userid=created_by_userid)
             db.add(db_user)
             db.commit()
             db.refresh(db_user)

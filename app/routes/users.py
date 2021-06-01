@@ -16,7 +16,7 @@ class UserStatus(str, Enum):
 
 
 @router.post("/", responses=response_schemas.general_responses)
-def register_user(user: schemas.UserCreate,
+def register_user(user: schemas.AdminUserCreate,
                   db: Session = Depends(deps.get_db),
                   current_user: schemas.UserVerify = Depends(
                       deps.get_current_admin)) -> JSONResponse:

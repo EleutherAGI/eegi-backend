@@ -23,15 +23,14 @@ def signup_with_key(user: schemas.UserKeyCreate,
                     db: Session = Depends(deps.get_db))  -> JSONResponse:
     """ Register A User"""
 
-
-    data = crud_keys.get_key_id(id=user.key, db=db)
+    key = crud_keys.get_key_id(id=user.key, db=db)
     #Check if key is exists
-    if data is None:
+    if key is None:
         return JSONResponse(status_code=400,
                             content={"message": "Invalid Key!"})
 
     #Check if key is already in use
-    if data.user_id is not None:
+    if key.user_id is not None:
         return JSONResponse(status_code=400,
                             content={"message": "Key Already in use!"})
 
@@ -40,8 +39,8 @@ def signup_with_key(user: schemas.UserKeyCreate,
         password = user.password,
         first_name = user.first_name,
         is_active = True,
-        is_admin = False,
-        created_by_userid = data.created_by_userid
+        is_admin = key.is_admin,
+        created_by_userid = key.created_by_userid
     )
 
 
