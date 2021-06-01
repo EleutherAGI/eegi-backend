@@ -36,7 +36,7 @@ def register_user(user: schemas.AdminUserCreate,
 
 
 @router.put("/{user_id}", responses=response_schemas.general_responses)
-def update_user(user_id: int, user: schemas.UserUpdate,
+def update_user(user_id: str, user: schemas.UserUpdate,
                 db: Session = Depends(deps.get_db),
                 current_user: schemas.UserVerify = Depends(
                     deps.get_current_admin)) -> JSONResponse:
@@ -53,7 +53,7 @@ def update_user(user_id: int, user: schemas.UserUpdate,
 @router.put("/change_password/{user_id}",
             responses=response_schemas.general_responses,
             include_in_schema=False)
-def update_password(user_id: int, user: schemas.UserPasswordChange,
+def update_password(user_id: str, user: schemas.UserPasswordChange,
                     db: Session = Depends(deps.get_db),
                     current_user: schemas.UserVerify = Depends(
                         deps.get_current_admin)) -> JSONResponse:
@@ -77,7 +77,7 @@ def update_password(user_id: int, user: schemas.UserPasswordChange,
 
 @router.put("/user_status/{user_id}",
             responses=response_schemas.general_responses)
-def update_user_status(user_id: int, status: UserStatus = UserStatus.enable,
+def update_user_status(user_id: str, status: UserStatus = UserStatus.enable,
                        db: Session = Depends(deps.get_db),
                        current_user: schemas.UserVerify = Depends(
                            deps.get_current_admin)) -> JSONResponse:
@@ -93,7 +93,7 @@ def update_user_status(user_id: int, status: UserStatus = UserStatus.enable,
 
 @router.delete("/{user_id}",
                responses=response_schemas.general_responses)
-def delete_user(user_id: int, db: Session = Depends(deps.get_db),
+def delete_user(user_id: str, db: Session = Depends(deps.get_db),
                 current_user: schemas.UserVerify = Depends(
                     deps.get_current_admin)) -> JSONResponse:
     """ Delete A User"""
