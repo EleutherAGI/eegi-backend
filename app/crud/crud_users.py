@@ -37,7 +37,7 @@ class CRUDUsers:
             print(e)
 
 
-    def create_user(self, user: schemas.UserCreate, db: Session) -> Any:
+    def create_user(self, user: schemas.UserCreate, created_by_userid: str, db: Session) -> Any:
         """ Add New User"""
         
         try:
@@ -48,7 +48,7 @@ class CRUDUsers:
                                   first_name=user.first_name,
                                   is_active=user.is_active,
                                   is_admin=user.is_admin,
-                                  created_by_userid=user.created_by_userid)
+                                  created_by_userid=created_by_userid)
             db.add(db_user)
             db.commit()
             db.refresh(db_user)

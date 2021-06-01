@@ -23,12 +23,11 @@ def register_user(user: schemas.AdminUserCreate,
     """ Register A User"""
     data = crud_base.get_user(email=user.email, db=db)
 
-    user.created_by_userid = current_user.id
 
     if data is not None:
         return JSONResponse(status_code=400,
                             content={"message": "email already registered"})
-    data = crud_users.create_user(user=user, db=db)
+    data = crud_users.create_user(user=user, created_by_userid=current_user.id, db=db)
     if data is None:
         return JSONResponse(status_code=500,
                             content={"message": "Internal Server Error"})
