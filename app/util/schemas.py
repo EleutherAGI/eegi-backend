@@ -81,9 +81,10 @@ class Key(BaseModel):
 
 class FilterComparisonCreate(BaseModel):
     item_1_is_better: bool
-    text_sample_id_1: str
-    text_sample_id_2: str
-    
+    text_sample_id_1: int
+    text_sample_id_2: int
+    #TODO change ids to string
+
 class FilterComparison(BaseModel):
     id: str
     item_1_is_better: bool
