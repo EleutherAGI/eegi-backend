@@ -9,6 +9,7 @@ from app.settings import DBSettings
 from sqlalchemy import create_engine
 from app.db import SessionLocal
 from app.db.models import TextSample
+import uuid
 
 
 
@@ -22,7 +23,7 @@ def main():
 
     with open(args.file_name) as f:
         json_data = json.load(f)
-    objects = [TextSample(text=str(item)) for item in json_data['data']]
+    objects = [TextSample(text=str(item), id=str(uuid.uuid4().hex)) for item in json_data['data']]
     db.bulk_save_objects(objects)
     db.commit()
         

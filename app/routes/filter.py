@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("/comparisons", responses=response_schemas.all_filter_comparison_responses)
-def get_comparisons(comparison_id: int = None, page_num: int = 1,
+def get_comparisons(comparison_id: str = None, page_num: int = 1,
                   db: Session = Depends(deps.get_db),
                   current_user: schemas.UserVerify = Depends(
                       deps.get_current_user)) -> JSONResponse:

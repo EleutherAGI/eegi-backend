@@ -17,34 +17,34 @@ class BinaryComparisonBase:
 class TextSample(Base):
     __tablename__ = "text_samples"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True)
     text = Column(String, nullable=False)
 
-    @property
-    def text_sample_comparisons(self):
-        return self.text_sample_comparisons_from_1 + self.text_sample_comparisons_from_2
+    #@property
+    #def text_sample_comparisons(self):
+    #    return self.text_sample_comparisons_from_1 + self.text_sample_comparisons_from_2
 
 
 class TextSampleComparison(Base, BinaryComparisonBase):
     __tablename__ = "text_sample_comparisons"
 
-    id = Column(String, primary_key=True, index=True)
-    text_sample_id_1 = Column(Integer, ForeignKey("text_samples.id"), nullable=False)
-    text_sample_id_2 = Column(Integer, ForeignKey("text_samples.id"), nullable=False)
+    id = Column(String, primary_key=True)
+    text_sample_id_1 = Column(String, nullable=False)
+    text_sample_id_2 = Column(String, nullable=False)
     created_timestamp = Column(TIMESTAMP, nullable=True, default=datetime.utcnow)
     user_id = Column(String, ForeignKey("users.id"))
 
-    text_sample_1 = relationship("TextSample", foreign_keys=[text_sample_id_1], backref="text_sample_comparisons_from_1")
-    text_sample_2 = relationship("TextSample", foreign_keys=[text_sample_id_2], backref="text_sample_comparisons_from_2")
-    user = relationship("User", backref="text_sample_comparisons")
+    #text_sample_1 = relationship("TextSample", foreign_keys=[text_sample_id_1])
+    #text_sample_2 = relationship("TextSample", foreign_keys=[text_sample_id_2])
+    #user = relationship("User")
     
 
 
 class Summary(Base):
     __tablename__ = "summaries"
 
-    id = Column(Integer, primary_key=True, index=True)
-    text_sample_id = Column(Integer, ForeignKey("text_samples.id"), nullable=False)
+    id = Column(String, primary_key=True)
+    text_sample_id = Column(String, ForeignKey("text_samples.id"), nullable=False)
     summary = Column(String, nullable=False)
     text_sample = relationship("TextSample", backref="summaries")
 
@@ -56,10 +56,10 @@ class Summary(Base):
 class SummaryComparison(Base, BinaryComparisonBase):
     __tablename__ = "summary_comparisons"
 
-    id = Column(Integer, primary_key=True, index=True)
-    text_id = Column(Integer, ForeignKey("text_samples.id"), nullable=False)
-    summary_id_1 = Column(Integer, ForeignKey("summaries.id"), nullable=False)
-    summary_id_2 = Column(Integer, ForeignKey("summaries.id"), nullable=False)
+    id = Column(String, primary_key=True)
+    text_id = Column(String, ForeignKey("text_samples.id"), nullable=False)
+    summary_id_1 = Column(String, ForeignKey("summaries.id"), nullable=False)
+    summary_id_2 = Column(String, ForeignKey("summaries.id"), nullable=False)
     user_id = Column(String, ForeignKey("users.id"))
 
     text_sample = relationship("TextSample", backref="summary_comparisons")
